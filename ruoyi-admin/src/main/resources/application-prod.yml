@@ -13,11 +13,11 @@ ruoyi:
     # 获取ip地址开关
     addressEnabled: false
     #签到服务地址
-    signAddress: https://gecs.nuist.edu.cn/edu
+    signAddress: 
     # 腾讯云上传
-    secretId: AKID1rRloa6XyHMDqEQQAesqZ2FCtKVQ6Xhb
-    secretKey: h8ICpBG3cvxhAMIxKQGo55pHSLxIL7ds
-    appId: 1256166815
+    secretId: 
+    secretKey: 
+    appId: 
     mediaPath: /home/media/
     coverPath: /home/cover/
     ccNum: 5
