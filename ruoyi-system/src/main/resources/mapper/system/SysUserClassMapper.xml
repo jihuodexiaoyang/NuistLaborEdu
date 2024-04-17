@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysUserClassMapper">
+    
+    <resultMap type="SysUserClass" id="SysUserClassResult">
+        <result property="userId"    column="user_id"    />
+        <result property="classType"    column="class_type"    />
+        <result property="classId"    column="class_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="completeFlag"    column="complete_flag"    />
+        <result property="completeTime"    column="complete_time"    />
+    </resultMap>
+    <resultMap type="SysKaohe" id="SysKaoheResult">
+        <result property="userId"    column="user_id"    />
+        <result property="loginName"    column="login_name"    />
+        <result property="userName"    column="user_name"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="email"    column="email"    />
+        <result property="sex"    column="sex"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="classId"    column="class_id"    />
+        <result property="classType"    column="class_type"    />
+        <result property="classTitle"    column="class_title"    />
+        <result property="classCredit"    column="class_credit"    />
+        <result property="completeFlag"    column="complete_flag"    />
+        <result property="completeTime"    column="complete_time"    />
+    </resultMap>
+    <resultMap type="SysTouxi" id="SysTouxiResult">
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="loginName"    column="login_name"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="email"    column="email"    />
+        <result property="sex"    column="sex"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="classType"    column="class_type"    />
+        <result property="completeFlag"    column="complete_flag"    />
+        <result property="totalCredit"    column="total_credit"    />
+    </resultMap>
+
+    <sql id="selectSysUserClassVo">
+        select user_id, class_type, class_id, create_time, complete_flag, complete_time from sys_user_class
+    </sql>
+    <select id="selectSysUserKaoheList" parameterType="SysKaohe" resultMap="SysKaoheResult">
+        SELECT
+            t.user_id,
+            t.login_name,
+            t.user_name,
+            t.dept_id,
+            t.dept_name,
+            t.email,
+            t.sex,
+            t.status,
+            t.del_flag,
+            t.class_id,
+            t.class_type,
+            t.class_title,
+            t.class_credit,
+            t.complete_flag,
+            t.complete_time
+        FROM
+            sys_user_class_v t
+        WHERE
+            t.del_flag = '0'
+        <if test="userName != null and userName != ''">
+            AND t.user_name like concat('%', #{userName}, '%')
+        </if>
+        <if test="loginName != null and loginName != ''">
+            AND t.login_name like concat('%', #{loginName}, '%')
+        </if>
+        <if test="classType != null  and classType != ''">
+           AND t.class_type = #{classType}
+        </if>
+        <if test="deptId != null and deptId != 0">
+            AND (t.dept_id = #{deptId} OR t.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE FIND_IN_SET (#{deptId},ancestors) ))
+        </if>
+    </select>
+    <select id="selectSysUserYujingList" parameterType="SysKaohe" resultMap="SysKaoheResult">
+        SELECT
+            t.user_id,
+            t.login_name,
+            t.user_name,
+            t.dept_id,
+            t.dept_name,
+            t.email,
+            t.sex,
+            t.status,
+            t.del_flag,
+            t.class_id,
+            t.class_type,
+            t.class_title,
+            t.class_credit,
+            t.complete_flag,
+            t.complete_time
+        FROM
+        sys_user_class_v t
+        WHERE
+        t.del_flag = '0' AND t.complete_flag='0'
+        <if test="userName != null and userName != ''">
+            AND t.user_name like concat('%', #{userName}, '%')
+        </if>
+        <if test="loginName != null and loginName != ''">
+            AND t.login_name like concat('%', #{loginName}, '%')
+        </if>
+        <if test="classType != null  and classType != ''">
+            AND t.class_type = #{classType}
+        </if>
+        <if test="deptId != null and deptId != 0">
+            AND (t.dept_id = #{deptId} OR t.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE FIND_IN_SET (#{deptId},ancestors) ))
+        </if>
+    </select>
+    <select id="selectSysUserTouxiList" parameterType="SysTouxi" resultMap="SysTouxiResult">
+        SELECT
+            t.user_id,
+            t.user_name,
+            t.login_name,
+            t.dept_id,
+            t.dept_name,
+            t.email,
+            t.sex,
+            t.status,
+            t.del_flag,
+            t.class_type,
+            t.complete_flag,
+            t.total_credit
+        FROM
+            sys_user_credits_v t
+        WHERE
+            t.del_flag = '0'
+        <if test="userName != null and userName != ''">
+            AND t.user_name like concat('%', #{userName}, '%')
+        </if>
+        <if test="loginName != null and loginName != ''">
+            AND t.login_name like concat('%', #{loginName}, '%')
+        </if>
+        <if test="deptId != null and deptId != 0">
+            AND (t.dept_id = #{deptId} OR t.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE FIND_IN_SET (#{deptId},ancestors) ))
+        </if>
+    </select>
+    <select id="selectSysUserClassList" parameterType="SysUserClass" resultMap="SysUserClassResult">
+        <include refid="selectSysUserClassVo"/>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="classType != null "> and class_type = #{classType}</if>
+            <if test="classId != null "> and class_id = #{classId}</if>
+            <if test="completeFlag != null  and completeFlag != ''"> and complete_flag = #{completeFlag}</if>
+            <if test="completeTime != null "> and complete_time = #{completeTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysUserClassByUserId" parameterType="Long" resultMap="SysUserClassResult">
+        <include refid="selectSysUserClassVo"/>
+        where user_id = #{userId}
+    </select>
+        
+    <insert id="insertSysUserClass" parameterType="SysUserClass">
+        insert into sys_user_class
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="classType != null">class_type,</if>
+            <if test="classId != null">class_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="completeFlag != null">complete_flag,</if>
+            <if test="completeTime != null">complete_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="classType != null">#{classType},</if>
+            <if test="classId != null">#{classId},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="completeFlag != null">#{completeFlag},</if>
+            <if test="completeTime != null">#{completeTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysUserClass" parameterType="SysUserClass">
+        update sys_user_class
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="classType != null">class_type = #{classType},</if>
+            <if test="classId != null">class_id = #{classId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="completeFlag != null">complete_flag = #{completeFlag},</if>
+            <if test="completeTime != null">complete_time = #{completeTime},</if>
+        </trim>
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteSysUserClassByUserId" parameterType="Long">
+        delete from sys_user_class where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteSysUserClassByUserIds" parameterType="String">
+        delete from sys_user_class where user_id in 
+        <foreach item="userId" collection="array" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+    <delete id="deSelectClass" parameterType="SysUserClass">
+        delete from sys_user_class where user_id=#{userId} and class_type=#{classType} and class_id=#{classId}
+    </delete>
+</mapper>

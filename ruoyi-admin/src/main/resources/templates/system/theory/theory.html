@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('劳动文化讲座列表')" />
+    <meta charset="UTF-8">
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>课程标题：</label>
+                                <input type="text" name="classTitle"/>
+                            </li>
+                            <li>
+                                <label>开课单位：</label>
+                                <input type="text" name="classOrg"/>
+                            </li>
+                            <li>
+                                <label>课程分类：</label>
+                                <select name="classSubject" th:with="type=${@dict.getType('sys_theory_type')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>开课地点：</label>
+                                <input type="text" name="classAddress"/>
+                            </li>
+                            <li>
+                                <label>联系人：</label>
+                                <input type="text" name="classOwner"/>
+                            </li>
+                            <li>
+                                <label>联系电话：</label>
+                                <input type="text" name="classMobile"/>
+                            </li>
+                            <li>
+                                <label>开始时间：</label>
+                                <input type="text" class="time-input" autocomplete="off" placeholder="请选择课程开始时间" name="classStarttime"/>
+                            </li>
+                            <li>
+                                <label>结束时间：</label>
+                                <input type="text" class="time-input" autocomplete="off" placeholder="请选择课程结束时间" name="classEndtime"/>
+                            </li>
+                            <li>
+                                <label>课程学分：</label>
+                                <input type="text" name="classCredit"/>
+                            </li>
+                            <li>
+                                <label>课程状态：</label>
+                                <select name="status" th:with="type=${@dict.getType('sys_normal_disable')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.addTab()" shiro:hasPermission="system:theory:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.editTab()" shiro:hasPermission="system:theory:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:theory:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:theory:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('system:theory:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('system:theory:remove')}]];
+        var generateFlag = [[${@permission.hasPermi('system:theory:generate')}]];
+        var datas = [[${@dict.getType('sys_theory_typeSubject')}]];
+        var prefix = ctx + "system/theory";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "劳动文化讲座",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'classId',
+                    title: '编号',
+                    visible: false
+                },
+                {
+                    field: 'orderNum',
+                    title: '排序'
+                },
+                {
+                    field: 'classDept',
+                    title: '部门编号',
+                    visible: false
+                },
+                {
+                    field: 'classTitle',
+                    title: '课程标题'
+                },
+                {
+                    field: 'classSubject',
+                    title: '课程分类',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(datas, value);
+                    }
+                },
+                {
+                    field: 'classOrg',
+                    title: '开课单位'
+                },
+                {
+                    field: 'classOverview',
+                    title: '讲座内容',
+                    formatter: function(value, row, index) {
+                        return $.table.tooltip(value, 10, "open");
+                    }
+                },
+                {
+                    field: 'classAddress',
+                    title: '开课地点'
+                },
+                {
+                    field: 'classOwner',
+                    title: '联系人'
+                },
+                {
+                    field: 'classMobile',
+                    title: '联系电话'
+                },
+                {
+                    field: 'classStarttime',
+                    title: '课程开始时间'
+                },
+                {
+                    field: 'classEndtime',
+                    title: '课程结束时间'
+                },
+                {
+                    field: 'classCredit',
+                    title: '课程学分'
+                },
+                {
+                    field: 'classLimit',
+                    title: '容纳人数'
+                },
+                {
+                    field: 'classApply',
+                    title: '申请人数'
+                },
+                {
+                    field: 'classLike',
+                    title: '喜欢人数',
+                    visible: false
+                },
+                {
+                    visible: editFlag == 'hidden' ? false : true,
+                    title: '开课状态',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        return statusTools(row);
+                    }
+                },
+                {
+                    field: 'remark',
+                    title: '备注',
+                    formatter: function(value, row, index) {
+                        return $.table.tooltip(value, 10, "open");
+                    }
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.editTab(\'' + row.classId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.classId + '\')"><i class="fa fa-remove"></i>删除</a> ');
+                        actions.push('<a class="btn btn-primary btn-xs ' + generateFlag + '" href="javascript:void(0)" onclick="genQrcode(\'' + row.classId + '\')"><i class="fa fa-qrcode"></i>二维码下载</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+        /* 课程状态显示 */
+        function statusTools(row) {
+            if (row.status == 1) {
+                return '<i class=\"fa fa-toggle-off text-info fa-2x\" onclick="enable(\'' + row.classId + '\')"></i> ';
+            } else {
+                return '<i class=\"fa fa-toggle-on text-info fa-2x\" onclick="disable(\'' + row.classId + '\')"></i> ';
+            }
+        }
+
+        /* 课程-停用 */
+        function disable(classId) {
+            $.modal.confirm("确认要取消课程吗？", function() {
+                $.operate.post(prefix + "/changeStatus", { "classId": classId, "status": 1 });
+            })
+        }
+
+        /* 课程启用 */
+        function enable(classId) {
+            $.modal.confirm("确认要启用课程吗？", function() {
+                $.operate.post(prefix + "/changeStatus", { "classId": classId, "status": 0 });
+            })
+        }
+        /* 生成课程二维码 */
+        function genQrcode(classId) {
+            $.modal.confirm("确定要下载该课程二维码吗？", function() {
+                location.href = prefix + "/genqrcode/" + classId;
+                layer.msg('执行成功,正在生成请稍候…', { icon: 1 });
+            })
+        }
+    </script>
+</body>
+</html>

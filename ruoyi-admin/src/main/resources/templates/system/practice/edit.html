@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改发布型劳动')" />
+    <th:block th:include="include :: datetimepicker-css" />
+    <th:block th:include="include :: ztree-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-practice-edit" th:object="${sysPractice}">
+            <input id="id_classId" name="classId" th:field="*{classId}" type="hidden">
+            <h4 class="form-header h4">基本信息</h4>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label is-required">岗位名称：</label>
+                        <div class="col-sm-8">
+                            <select id="id_classTitle" name="classTitle" class="form-control m-b" th:with="type=${@dict.getType('sys_practice_classTitle')}">
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{classTitle}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label is-required">岗位单位：</label>
+                        <div class="col-sm-8">
+                            <select id="id_classOrg" name="classOrg" class="form-control m-b" th:with="type=${@dict.getType('sys_practice_classOrg')}">
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{classOrg}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="col-xs-2 control-label">岗位职责：</label>
+                        <div class="col-xs-10">
+                            <textarea id="id_classOverview" name="classOverview" class="form-control" rows="3">[[*{classOverview}]]</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">课程主题分类：</label>
+                        <div class="col-sm-8">
+                            <select id="id_classSubject" name="classSubject" class="form-control m-b" th:with="type=${@dict.getType('sys_practice_classSubject')}">
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{classSubject}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label is-required">岗位开始时间：</label>
+                        <div class="col-sm-8">
+                            <div class="input-group date">
+                                <input id="id_classStarttime" name="classStarttime" th:value="${#dates.format(sysPractice.classStarttime, 'yyyy-MM-dd HH:mm:ss')}" class="form-control" autocomplete="off" placeholder="yyyy-MM-dd" type="text" required>
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label is-required">岗位结束时间：</label>
+                        <div class="col-sm-8">
+                            <div class="input-group date">
+                                <input id="id_classEndtime" name="classEndtime" th:value="${#dates.format(sysPractice.classEndtime, 'yyyy-MM-dd HH:mm:ss')}" class="form-control" autocomplete="off" placeholder="yyyy-MM-dd" type="text" required>
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label is-required">联系人：</label>
+                        <div class="col-sm-8">
+                            <input name="classOwner" th:field="*{classOwner}" class="form-control" type="text" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">联系电话：</label>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                                <input name="classMobile" th:field="*{classMobile}" class="form-control" type="text">
+                                <span class="input-group-addon"><i class="fa fa-mobile"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">排序：</label>
+                        <div class="col-sm-8">
+                            <input name="orderNum" th:field="*{orderNum}" class="form-control" type="text">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">岗位学分：</label>
+                        <div class="col-sm-8">
+                            <input name="classCredit" th:field="*{classCredit}" class="form-control" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">容纳人数：</label>
+                        <div class="col-sm-8">
+                            <input name="classLimit" th:field="*{classLimit}" class="form-control" type="text">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">岗位状态：</label>
+                        <div class="col-sm-8">
+                            <label class="toggle-switch switch-solid">
+                                <input type="checkbox" id="status" th:checked="${sysPractice.status == '0' ? true : false}">
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">负责人：</label>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                                <input id="id_classFzrid" name="classFzrid" th:field="*{classFzrid}" type="hidden">
+                                <input id="id_classFzrxm" name="classFzrxm" th:field="*{classFzrxm}" onclick="selectFzr()" placeholder="请选择负责人" class="form-control" type="text">
+                                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">选课单位：</label>
+                        <div class="col-sm-8">
+                            <label class="check-box">
+                                <input type="checkbox" value="1">展开/折叠</label>
+                            <label class="check-box">
+                                <input type="checkbox" value="2">全选/全不选</label>
+                            <label class="check-box">
+                                <input type="checkbox" value="3" checked>父子联动</label>
+                            <div id="deptTrees" class="ztree ztree-border"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h4 class="form-header h4">其他信息</h4>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="col-xs-2 control-label">备注：</label>
+                        <div class="col-xs-10">
+                            <textarea id="id_remark" name="remark" class="form-control" rows="3">[[*{remark}]]</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+        <div class="col-sm-offset-5 col-sm-10">
+            <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>保 存</button>&nbsp;
+            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <th:block th:include="include :: ztree-js" />
+    <script th:inline="javascript">
+        var prefix = ctx + "system/practice";
+        $(function() {
+            var url = ctx + "system/dept/treePracticeData?classId="+ $("#id_classId").val();
+            var options = {
+                id: "deptTrees",
+                url: url,
+                expandLevel: 2,
+                check: { enable: true }
+            };
+            $.tree.init(options);
+        });
+        $("#form-practice-edit").validate({
+            focusCleanup: true,
+            rules: {
+                classStarttime: {
+                    date:true
+                },
+                classEndtime: {
+                    date:true,
+                },
+                classMobile: {
+                    required: true,
+                    isPhone:true
+                },
+                orderNum:{
+                    required: true,
+                    digits:true
+                },
+                classCredit:{
+                    required: true,
+                    digits:true
+                },
+                classLimit:{
+                    required: true,
+                    digits:true
+                }
+            },
+            messages: {
+                classStarttime: {
+                    date:icon + "日期格式不正确"
+                },
+                classEndtime: {
+                    date:icon + "日期格式不正确"
+                },
+                classMobile: {
+                    required: icon + "请输入手机号码",
+                    isPhone:icon + "手机号码格式不正确"
+                },
+                orderNum:{
+                    required: icon + "请输入排序号",
+                    digits:icon + "数字格式不正确"
+                },
+                classCredit:{
+                    required: icon + "请输入岗位学分",
+                    digits:icon + "数字格式不正确"
+                },
+                classLimit:{
+                    required: icon + "请输入岗位人数",
+                    digits:icon + "数字格式不正确"
+                }
+            }
+        });
+        /*
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.saveTab(prefix + "/edit", $('#form-practice-edit').serialize());
+            }
+        }*/
+        //打开选择负责人窗口
+        function selectFzr() {
+            var url = prefix + '/selectfzr';
+            var options = {
+                title: '选择课程负责人',
+                width: "800",
+                url: url,
+                callBack: doSubmitFzr
+            };
+            $.modal.openOptions(options);
+        }
+        function doSubmitFzr(index, layero){
+            var userIds = layero.find("iframe")[0].contentWindow.getSelections();
+            var userNames=layero.find("iframe")[0].contentWindow.getSelectUsername();
+            if (userIds.length == 0) {
+                $.modal.alertWarning("请至少选择一条记录");
+                return;
+            }
+            $('#id_classFzrid').val(userIds.join());
+            $('#id_classFzrxm').val(userNames);
+            $.modal.close(index);
+        }
+        <!-- laydate -->
+        layui.use('laydate', function(){
+            var laydate = layui.laydate;
+
+            laydate.render({
+                elem: '#id_classStarttime',
+                type: 'datetime',
+                trigger: 'click'
+            });
+
+            laydate.render({
+                elem: '#id_classEndtime',
+                type: 'datetime',
+                trigger: 'click'
+            });
+        });
+        $('input[type=checkbox]').on('ifChanged', function(obj){
+            var type = $(this).val();
+            var checked = obj.currentTarget.checked;
+            if (type == 1) {
+                if (checked) {
+                    $._tree.expandAll(true);
+                } else {
+                    $._tree.expandAll(false);
+                }
+            } else if (type == "2") {
+                if (checked) {
+                    $._tree.checkAllNodes(true);
+                } else {
+                    $._tree.checkAllNodes(false);
+                }
+            } else if (type == "3") {
+                if (checked) {
+                    $._tree.setting.check.chkboxType = { "Y": "ps", "N": "ps" };
+                } else {
+                    $._tree.setting.check.chkboxType = { "Y": "", "N": "" };
+                }
+            }
+        })
+        function submitHandler() {
+            if ($.validate.form()) {
+                edit();
+            }
+        }
+        function edit() {
+            var classId = $("input[name='classId']").val();
+            var classTitle = $("#id_classTitle").val();
+            var classOrg = $("#id_classOrg").val();
+            var classOverview = $("#id_classOverview").val();
+            var classSubject = $("#id_classSubject").val();
+            var classStarttime = $("input[name='classStarttime']").val();
+            var classEndtime = $("input[name='classEndtime']").val();
+            var classOwner = $("input[name='classOwner']").val();
+            var classMobile = $("input[name='classMobile']").val();
+            var orderNum = $("input[name='orderNum']").val();
+            var classCredit = $("input[name='classCredit']").val();
+            var classLimit = $("input[name='classLimit']").val();
+            var classFzrid = $("input[name='classFzrid']").val();
+            var classFzrxm = $("input[name='classFzrxm']").val();
+            var status = $("input[id='status']").is(':checked') == true ? 0 : 1;
+            var remark = $("#id_remark").val();
+            var deptIds = $.tree.getCheckedNodes();
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : ctx + "system/practice/edit",
+                data : {
+                    "classId": classId,
+                    "classTitle": classTitle,
+                    "classOrg": classOrg,
+                    "classOverview": classOverview,
+                    "classSubject": classSubject,
+                    "classStarttime": classStarttime,
+                    "classEndtime": classEndtime,
+                    "classOwner": classOwner,
+                    "classMobile": classMobile,
+                    "orderNum": orderNum,
+                    "classCredit": classCredit,
+                    "classLimit": classLimit,
+                    "classFzrid": classFzrid,
+                    "classFzrxm": classFzrxm,
+                    "status": status,
+                    "remark": remark,
+                    "deptIds": deptIds
+                },
+                async : false,
+                error : function(request) {
+                    $.modal.alertError("系统错误");
+                },
+                success : function(data) {
+                    $.operate.successTabCallback(data);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

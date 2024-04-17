@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysClassDeptMapper">
+    
+    <resultMap type="SysClassDept" id="SysClassDeptResult">
+        <result property="classId"    column="class_id"    />
+        <result property="classType"    column="class_type"    />
+        <result property="classDept"    column="class_dept"    />
+    </resultMap>
+
+    <sql id="selectSysClassDeptVo">
+        select class_id, class_type, class_dept from sys_class_dept
+    </sql>
+
+    <select id="selectSysClassDeptList" parameterType="SysClassDept" resultMap="SysClassDeptResult">
+        <include refid="selectSysClassDeptVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectSysClassDeptByClassId" parameterType="Long" resultMap="SysClassDeptResult">
+        <include refid="selectSysClassDeptVo"/>
+        where class_id = #{classId}
+    </select>
+        
+    <insert id="insertSysClassDept" parameterType="SysClassDept">
+        insert into sys_class_dept
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="classId != null">class_id,</if>
+            <if test="classType != null">class_type,</if>
+            <if test="classDept != null">class_dept,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="classId != null">#{classId},</if>
+            <if test="classType != null">#{classType},</if>
+            <if test="classDept != null">#{classDept},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysClassDept" parameterType="SysClassDept">
+        update sys_class_dept
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="classType != null">class_type = #{classType},</if>
+            <if test="classDept != null">class_dept = #{classDept},</if>
+        </trim>
+        where class_id = #{classId}
+    </update>
+
+    <delete id="deleteSysClassDeptByClassId" parameterType="Long">
+        delete from sys_class_dept where class_id = #{classId}
+    </delete>
+    <delete id="deleteSysClassDeptByClassId1" parameterType="Long">
+        delete from sys_class_dept where class_id = #{classId} and class_type='0'
+    </delete>
+    <delete id="deleteSysClassDeptByClassId2" parameterType="Long">
+        delete from sys_class_dept where class_id = #{classId} and class_type='1'
+    </delete>
+    <delete id="deleteSysClassDeptByClassIds" parameterType="String">
+        delete from sys_class_dept where class_id in 
+        <foreach item="classId" collection="array" open="(" separator="," close=")">
+            #{classId}
+        </foreach>
+    </delete>
+    <insert id="batchClassDept">
+        insert into sys_class_dept(class_id,class_type, class_dept) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.classId},#{item.classType},#{item.classDept})
+        </foreach>
+    </insert>
+</mapper>

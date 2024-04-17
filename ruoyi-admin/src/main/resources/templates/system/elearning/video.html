@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('在线观看视频')" />
+    <th:block th:include="include :: vod-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content" style="height: 600px;">
+        <form class="form-horizontal m" id="form-elearning-video" th:object="${sysCourse}">
+            <input id="id_courseFileid" name="courseFileid" th:field="*{courseFileid}" type="hidden">
+            <input id="id_courseUrl" name="courseUrl" th:field="*{courseUrl}" type="hidden">
+            <input id="id_courseCoverurl" name="courseCoverurl" th:field="*{courseCoverurl}" type="hidden">
+            <input id="id_appId" name="appId" th:field="${appId}" type="hidden">
+            <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-8" >
+                    <video id="id_vodplay" style="height: 600px; width: 100%" preload="auto" playsinline webkit-playsinline></video>
+                </div>
+                <div class="col-sm-2"></div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: vod-js" />
+    <script th:inline="javascript">
+        var fileId=$("#id_courseFileid").val();
+        var appId=$("#id_appId").val();
+        var courseUrl=$("#id_courseUrl").val();
+        var coverUrl=$("#id_courseCoverurl").val();
+        var player = TCPlayer('id_vodplay', {});
+        player.src(courseUrl); // url 播放地址
+    </script>
+</body>
+</html>

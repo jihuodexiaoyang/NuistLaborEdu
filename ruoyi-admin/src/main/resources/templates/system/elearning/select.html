@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('在线学习选课')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>课程标题：</label>
+                                <input type="text" name="classTitle"/>
+                            </li>
+                            <li>
+                                <label>课程分类：</label>
+                                <select name="classSubject" th:with="type=${@dict.getType('sys_elearning_type')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>课程学分：</label>
+                                <input type="text" name="classCredit"/>
+                            </li>
+                            <li>
+                                <label>课程状态：</label>
+                                <select name="status" th:with="type=${@dict.getType('sys_normal_disable')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var selectFlag = [[${@permission.hasPermi('system:elearning:select')}]];
+        var learnFlag = [[${@permission.hasPermi('system:elearning:learn')}]];
+        var datas = [[${@dict.getType('sys_elearning_type')}]];
+        var datas_status = [[${@dict.getType('sys_normal_disable')}]];
+        var prefix = ctx + "system/elearning";
+
+        $(function() {
+            var options = {
+                url: prefix + "/listsel",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "在线学习",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'classId',
+                    title: '编号',
+                    visible: false
+                },
+                {
+                    field: 'orderNum',
+                    title: '排序'
+                },
+                {
+                    field: 'classTitle',
+                    title: '课程标题'
+                },
+                {
+                    field: 'classSubject',
+                    title: '课程主题分类',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(datas, value);
+                    }
+                },
+                {
+                    field: 'classOverview',
+                    title: '课程简介',
+                    formatter: function(value, row, index) {
+                        return $.table.tooltip(value, 10, "open");
+                    }
+                },
+                {
+                    field: 'classCredit',
+                    title: '课程学分'
+                },
+                {
+                    field: 'classApply',
+                    title: '申请人数'
+                },
+                {
+                    field: 'classLike',
+                    title: '喜欢人数',
+                    visible: false
+                },
+                {
+                    field: 'status',
+                    title: '开课状态',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(datas_status, value);
+                    }
+                },
+                {
+                    field: 'remark',
+                    title: '备注',
+                    formatter: function(value, row, index) {
+                        return $.table.tooltip(value, 10, "open");
+                    }
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        if(row.selFlag==="0"){
+                            actions.push('<a class="btn btn-primary btn-xs ' + selectFlag + '" href="javascript:void(0)" onclick="selectClass(\'' + row.classId + '\')"><i class="fa fa-send"></i>选课</a> ');
+                        }else{
+                            actions.push('<a class="btn btn-danger btn-xs ' + selectFlag + '" href="javascript:void(0)" onclick="deselectClass(\'' + row.classId + '\')"><i class="fa fa-send"></i>取消选课</a> ');
+                        }
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+        /* 选课 */
+        function selectClass(classId) {
+            $.modal.confirm("确定要选择该门课程吗？", function() {
+                $.operate.post(prefix + "/select", { "classId": classId});
+            })
+        }
+        /* 取消选课 */
+        function deselectClass(classId) {
+            $.modal.confirm("确定要取消选择该门课程吗？", function() {
+                $.operate.post(prefix + "/deselect", { "classId": classId});
+            })
+        }
+    </script>
+</body>
+</html>

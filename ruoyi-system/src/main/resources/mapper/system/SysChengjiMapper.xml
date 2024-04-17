@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysChengjiMapper">
+
+    <resultMap type="SysChengji" id="SysChengjiResult">
+        <result property="userId"    column="user_id"    />
+        <result property="loginName"    column="login_name"    />
+        <result property="userName"    column="user_name"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="email"    column="email"    />
+        <result property="sex"    column="sex"    />
+        <result property="userStatus"    column="user_status"    />
+        <result property="sign1"    column="sign1"    />
+        <result property="credit1"    column="credit1"    />
+        <result property="hgzt1"    column="hgzt1"    />
+        <result property="sign2"    column="sign2"    />
+        <result property="credit2"    column="credit2"    />
+        <result property="hgzt2"    column="hgzt2"    />
+        <result property="sign3"    column="sign3"    />
+        <result property="credit3"    column="credit3"    />
+        <result property="hgzt3"    column="hgzt3"    />
+        <result property="credit4"    column="credit4"    />
+        <result property="credit5"    column="credit5"    />
+        <result property="credit6"    column="credit6"    />
+        <result property="totalCredit"    column="total_credit"    />
+    </resultMap>
+
+    <sql id="selectSysChengjiVo">
+        select user_id, login_name, user_name, dept_id, dept_name, email, sex, user_status, sign1, credit1, hgzt1, sign2, credit2, hgzt2, sign3, credit3, hgzt3, credit4, credit5, credit6, total_credit from sys_chengji
+    </sql>
+
+    <select id="selectSysChengjiList" parameterType="SysChengji" resultMap="SysChengjiResult">
+        SELECT
+            *
+        FROM
+            (
+            SELECT
+            T1.user_id,
+            T1.login_name,
+            T1.user_name,
+            T1.dept_id,
+            T1.dept_name,
+            T1.email,
+            T1.sex,
+            T1.status as user_status,
+            T2.total_sign AS sign1,
+            T2.total_credit AS credit1,
+            T3.total_sign AS sign2,
+            T3.total_credit AS credit2,
+            T4.total_sign AS sign3,
+            T4.total_credit AS credit3,
+            T5.user_credit AS credit4,
+            T6.user_credit AS credit5,
+            round(( T5.user_credit + T6.user_credit )/ 2, 1 ) AS credit6
+            FROM
+            sys_user_v T1
+            LEFT JOIN sys_theory_sum_v T2 ON T1.user_id = T2.user_id
+            LEFT JOIN sys_xyldsj_sum_v T3 ON T1.user_id = T3.user_id
+            LEFT JOIN sys_shfwsj_sum_v T4 ON T1.user_id = T4.user_id
+            LEFT JOIN sys_credit_online_v T5 ON T1.user_id = T5.user_id
+            LEFT JOIN sys_credit_prac_v T6 ON T1.user_id = T6.user_id
+            ) t
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="loginName != null  and loginName != ''"> and login_name like concat('%', #{loginName}, '%')</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="email != null  and email != ''"> and email = #{email}</if>
+            <if test="sex != null  and sex != ''"> and sex = #{sex}</if>
+            <if test="userStatus != null  and userStatus != ''"> and user_status = #{userStatus}</if>
+            <if test="sign1 != null "> and sign1 = #{sign1}</if>
+            <if test="credit1 != null "> and credit1 = #{credit1}</if>
+            <if test="hgzt1 != null  and hgzt1 != ''"> and hgzt1 = #{hgzt1}</if>
+            <if test="sign2 != null "> and sign2 = #{sign2}</if>
+            <if test="credit2 != null "> and credit2 = #{credit2}</if>
+            <if test="hgzt2 != null  and hgzt2 != ''"> and hgzt2 = #{hgzt2}</if>
+            <if test="sign3 != null "> and sign3 = #{sign3}</if>
+            <if test="credit3 != null "> and credit3 = #{credit3}</if>
+            <if test="hgzt3 != null  and hgzt3 != ''"> and hgzt3 = #{hgzt3}</if>
+            <if test="credit4 != null "> and credit4 = #{credit4}</if>
+            <if test="credit5 != null "> and credit5 = #{credit5}</if>
+            <if test="credit6 != null "> and credit6 = #{credit6}</if>
+            <if test="totalCredit != null  and totalCredit != ''"> and total_credit = #{totalCredit}</if>
+        </where>
+    </select>
+
+    <select id="selectSysChengjiByUserId" parameterType="Long" resultMap="SysChengjiResult">
+        <include refid="selectSysChengjiVo"/>
+        where user_id = #{userId}
+    </select>
+
+    <insert id="insertSysChengji" parameterType="SysChengji">
+        insert into sys_chengji
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="loginName != null and loginName != ''">login_name,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="deptName != null">dept_name,</if>
+            <if test="email != null">email,</if>
+            <if test="sex != null">sex,</if>
+            <if test="userStatus != null">user_status,</if>
+            <if test="sign1 != null">sign1,</if>
+            <if test="credit1 != null">credit1,</if>
+            <if test="hgzt1 != null">hgzt1,</if>
+            <if test="sign2 != null">sign2,</if>
+            <if test="credit2 != null">credit2,</if>
+            <if test="hgzt2 != null">hgzt2,</if>
+            <if test="sign3 != null">sign3,</if>
+            <if test="credit3 != null">credit3,</if>
+            <if test="hgzt3 != null">hgzt3,</if>
+            <if test="credit4 != null">credit4,</if>
+            <if test="credit5 != null">credit5,</if>
+            <if test="credit6 != null">credit6,</if>
+            <if test="totalCredit != null">total_credit,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="loginName != null and loginName != ''">#{loginName},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="deptName != null">#{deptName},</if>
+            <if test="email != null">#{email},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="userStatus != null">#{userStatus},</if>
+            <if test="sign1 != null">#{sign1},</if>
+            <if test="credit1 != null">#{credit1},</if>
+            <if test="hgzt1 != null">#{hgzt1},</if>
+            <if test="sign2 != null">#{sign2},</if>
+            <if test="credit2 != null">#{credit2},</if>
+            <if test="hgzt2 != null">#{hgzt2},</if>
+            <if test="sign3 != null">#{sign3},</if>
+            <if test="credit3 != null">#{credit3},</if>
+            <if test="hgzt3 != null">#{hgzt3},</if>
+            <if test="credit4 != null">#{credit4},</if>
+            <if test="credit5 != null">#{credit5},</if>
+            <if test="credit6 != null">#{credit6},</if>
+            <if test="totalCredit != null">#{totalCredit},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysChengji" parameterType="SysChengji">
+        update sys_chengji
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="loginName != null and loginName != ''">login_name = #{loginName},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="deptName != null">dept_name = #{deptName},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="userStatus != null">user_status = #{userStatus},</if>
+            <if test="sign1 != null">sign1 = #{sign1},</if>
+            <if test="credit1 != null">credit1 = #{credit1},</if>
+            <if test="hgzt1 != null">hgzt1 = #{hgzt1},</if>
+            <if test="sign2 != null">sign2 = #{sign2},</if>
+            <if test="credit2 != null">credit2 = #{credit2},</if>
+            <if test="hgzt2 != null">hgzt2 = #{hgzt2},</if>
+            <if test="sign3 != null">sign3 = #{sign3},</if>
+            <if test="credit3 != null">credit3 = #{credit3},</if>
+            <if test="hgzt3 != null">hgzt3 = #{hgzt3},</if>
+            <if test="credit4 != null">credit4 = #{credit4},</if>
+            <if test="credit5 != null">credit5 = #{credit5},</if>
+            <if test="credit6 != null">credit6 = #{credit6},</if>
+            <if test="totalCredit != null">total_credit = #{totalCredit},</if>
+        </trim>
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteSysChengjiByUserId" parameterType="Long">
+        delete from sys_chengji where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteSysChengjiByUserIds" parameterType="String">
+        delete from sys_chengji where user_id in
+        <foreach item="userId" collection="array" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+
+</mapper>

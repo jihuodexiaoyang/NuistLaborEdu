@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysCreditPracMapper">
+    
+    <resultMap type="SysCreditPrac" id="SysCreditPracResult">
+        <result property="id"    column="id"    />
+        <result property="userXuehao"    column="user_xuehao"    />
+        <result property="userCredit"    column="user_credit"    />
+    </resultMap>
+    <resultMap type="SysCredit" id="SysCreditResultPrac">
+        <result property="userId"    column="user_id"    />
+        <result property="loginName"    column="login_name"    />
+        <result property="userName"    column="user_name"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="email"    column="email"    />
+        <result property="sex"    column="sex"    />
+        <result property="status"    column="status"    />
+        <result property="userCredit"    column="user_credit"    />
+    </resultMap>
+    <sql id="selectSysCreditPracVo">
+        select id, user_xuehao, user_credit from sys_credit_prac
+    </sql>
+
+    <select id="selectSysCreditPracList" parameterType="SysCreditPrac" resultMap="SysCreditPracResult">
+        <include refid="selectSysCreditPracVo"/>
+        <where>  
+            <if test="userXuehao != null  and userXuehao != ''"> and user_xuehao = #{userXuehao}</if>
+            <if test="userCredit != null "> and user_credit = #{userCredit}</if>
+        </where>
+    </select>
+    <select id="selectSysCreditPracDeptList" parameterType="SysCredit" resultMap="SysCreditResultPrac">
+        select
+            user_id,
+            login_name,
+            user_name,
+            dept_id,
+            dept_name,
+            email,
+            sex,
+            status,
+            user_credit
+        from sys_credit_prac_v
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="loginName != null  and loginName != ''"> and login_name like concat('%', #{loginName}, '%')</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="email != null  and email != ''"> and email = #{email}</if>
+            <if test="sex != null  and sex != ''"> and sex = #{sex}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="userCredit != null "> and user_credit = #{userCredit}</if>
+        </where>
+    </select>
+    <select id="selectSysCreditPracById" parameterType="Long" resultMap="SysCreditPracResult">
+        <include refid="selectSysCreditPracVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysCreditPrac" parameterType="SysCreditPrac">
+        insert into sys_credit_prac
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userXuehao != null and userXuehao != ''">user_xuehao,</if>
+            <if test="userCredit != null">user_credit,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userXuehao != null and userXuehao != ''">#{userXuehao},</if>
+            <if test="userCredit != null">#{userCredit},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysCreditPrac" parameterType="SysCreditPrac">
+        update sys_credit_prac
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userXuehao != null and userXuehao != ''">user_xuehao = #{userXuehao},</if>
+            <if test="userCredit != null">user_credit = #{userCredit},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysCreditPracById" parameterType="Long">
+        delete from sys_credit_prac where id = #{id}
+    </delete>
+
+    <delete id="deleteSysCreditPracByIds" parameterType="String">
+        delete from sys_credit_prac where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('数据透析')" />
+	<th:block th:include="include :: layout-latest-css" />
+	<th:block th:include="include :: ztree-css" />
+	<meta charset="UTF-8">
+</head>
+<body class="gray-bg">
+	<div class="ui-layout-west">
+		<div class="box box-main">
+			<div class="box-header">
+				<div class="box-title">
+					<i class="fa icon-grid"></i> 组织机构
+				</div>
+				<div class="box-tools pull-right">
+					<button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;"><i class="fa fa-chevron-up"></i></button>
+					<button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠"><i class="fa fa-chevron-down"></i></button>
+					<button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新部门"><i class="fa fa-refresh"></i></button>
+				</div>
+			</div>
+			<div class="ui-layout-content">
+				<div id="tree" class="ztree"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="ui-layout-center">
+		<div class="container-div">
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="ibox float-e-margins">
+						<div class="ibox-title">
+							<h5>按学院统计</h5>
+							<div class="ibox-tools">
+								<a class="collapse-link">
+									<i class="fa fa-chevron-up"></i>
+								</a>
+								<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+									<i class="fa fa-wrench"></i>
+								</a>
+								<ul class="dropdown-menu dropdown-user">
+									<li><a href="#">选项1</a>
+									</li>
+									<li><a href="#">选项2</a>
+									</li>
+								</ul>
+								<a class="close-link">
+									<i class="fa fa-times"></i>
+								</a>
+							</div>
+						</div>
+						<div class="ibox-content">
+							<div class="echarts" id="id_xueyuan_chart"></div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="ibox float-e-margins">
+						<div class="ibox-title">
+							<h5>按劳动分类统计</h5>
+							<div class="ibox-tools">
+								<a class="collapse-link">
+									<i class="fa fa-chevron-up"></i>
+								</a>
+								<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+									<i class="fa fa-wrench"></i>
+								</a>
+								<ul class="dropdown-menu dropdown-user">
+									<li><a href="#">选项1</a>
+									</li>
+									<li><a href="#">选项2</a>
+									</li>
+								</ul>
+								<a class="close-link">
+									<i class="fa fa-times"></i>
+								</a>
+							</div>
+						</div>
+						<div class="ibox-content">
+							<div class="echarts" id="id_fenlei_chart"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="ibox float-e-margins">
+						<div class="ibox-title">
+							<h5>按专业统计</h5>
+							<div class="ibox-tools">
+								<a class="collapse-link">
+									<i class="fa fa-chevron-up"></i>
+								</a>
+								<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+									<i class="fa fa-wrench"></i>
+								</a>
+								<ul class="dropdown-menu dropdown-user">
+									<li><a href="#">选项1</a>
+									</li>
+									<li><a href="#">选项2</a>
+									</li>
+								</ul>
+								<a class="close-link">
+									<i class="fa fa-times"></i>
+								</a>
+							</div>
+						</div>
+						<div class="ibox-content">
+							<div class="echarts" id="id_zhuanye_chart"></div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="ibox float-e-margins">
+						<div class="ibox-title">
+							<h5>按年级统计</h5>
+							<div class="ibox-tools">
+								<a class="collapse-link">
+									<i class="fa fa-chevron-up"></i>
+								</a>
+								<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+									<i class="fa fa-wrench"></i>
+								</a>
+								<ul class="dropdown-menu dropdown-user">
+									<li><a href="#">选项1</a>
+									</li>
+									<li><a href="#">选项2</a>
+									</li>
+								</ul>
+								<a class="close-link">
+									<i class="fa fa-times"></i>
+								</a>
+							</div>
+						</div>
+						<div class="ibox-content">
+							<div class="echarts" id="id_nianji_chart"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: layout-latest-js" />
+	<th:block th:include="include :: ztree-js" />
+	<th:block th:include="include :: echarts-js" />
+	<script th:inline="javascript">
+		var prefix = ctx + "system/touxi";
+		var chart1 = echarts.init(document.getElementById('id_xueyuan_chart'));
+		var chart2 = echarts.init(document.getElementById('id_fenlei_chart'));
+		var chart3 = echarts.init(document.getElementById('id_zhuanye_chart'));
+		var chart4 = echarts.init(document.getElementById('id_nianji_chart'));
+		var option1 = {
+			tooltip: {
+				trigger: 'axis',
+				axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+					type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+				}
+			},
+			legend: {
+				data: ['已选学时', '已修学时', '未修学时']
+			},
+			grid: {
+				left: '3%',
+				right: '4%',
+				bottom: '3%',
+				containLabel: true
+			},
+			xAxis: {
+				type: 'value'
+			},
+			yAxis: {
+				type: 'category',
+				data: ['计算机与软件学院', '大气科学学院', '应用气象学院', '地理与遥感学院','数学与统计学院']
+			},
+			series: [
+				{
+					name: '已选学时',
+					type: 'bar',
+					stack: '总量',
+					label: {
+						show: true,
+						position: 'insideRight'
+					},
+					data: [1320, 1200,1100,1000,820]
+				},
+				{
+					name: '已修学时',
+					type: 'bar',
+					stack: '总量',
+					label: {
+						show: true,
+						position: 'insideRight'
+					},
+					data: [700, 650,580,500,420]
+				},
+				{
+					name: '未修学时',
+					type: 'bar',
+					stack: '总量',
+					label: {
+						show: true,
+						position: 'insideRight'
+					},
+					data: [620, 550, 520,500,400]
+				}
+			]
+		};
+		chart1.setOption(option1);
+		var option2 = {
+			tooltip: {
+				trigger: 'axis',
+				axisPointer: {
+					type: 'shadow'
+				}
+			},
+			legend: {
+				data: ['已选学时', '已修学时', '未修学时']
+			},
+			grid: {
+				left: '3%',
+				right: '4%',
+				bottom: '3%',
+				containLabel: true
+			},
+			xAxis: {
+				type: 'value',
+				boundaryGap: [0, 0.01]
+			},
+			yAxis: {
+				type: 'category',
+				data: ['理论教学', '劳动实践', '线上教学']
+			},
+			series: [
+				{
+					name: '已选学时',
+					type: 'bar',
+					data: [270, 240, 210]
+				},
+				{
+					name: '已修学时',
+					type: 'bar',
+					data: [150, 130, 120]
+				},
+				{
+					name: '未修学时',
+					type: 'bar',
+					data: [120, 110, 90]
+				}
+			]
+		};
+		chart2.setOption(option2);
+		var option3 = {
+			legend: {},
+			tooltip: {},
+			dataset: {
+				source: [
+					['专业', '已选学时', '已修学时', '未修学时'],
+					['计算机科学与技术', 100, 65, 35],
+					['软件工程', 120, 70, 50],
+					['网络工程', 90, 50, 40],
+					['信息安全', 100, 55, 45]
+				]
+			},
+			xAxis: {type: 'category'},
+			yAxis: {},
+			// Declare several bar series, each will be mapped
+			// to a column of dataset.source by default.
+			series: [
+				{type: 'bar'},
+				{type: 'bar'},
+				{type: 'bar'}
+			]
+		};
+		chart3.setOption(option3);
+		var option4 = {
+			angleAxis: {
+				type: 'category',
+				data: ['一年级', '二年级', '三年级', '四年级']
+			},
+			radiusAxis: {
+			},
+			polar: {
+			},
+			series: [{
+				type: 'bar',
+				data: [40, 35, 30,25],
+				coordinateSystem: 'polar',
+				name: '已选学时',
+				stack: 'a'
+			}, {
+				type: 'bar',
+				data: [25, 20, 18, 13],
+				coordinateSystem: 'polar',
+				name: '已修学时',
+				stack: 'a'
+			}, {
+				type: 'bar',
+				data: [15, 15, 12, 12],
+				coordinateSystem: 'polar',
+				name: '未修学时',
+				stack: 'a'
+			}],
+			legend: {
+				show: true,
+				data: ['已选学时', '已修学时', '未修学时']
+			}
+		};
+		chart4.setOption(option4);
+	</script>
+</body>
+</html>

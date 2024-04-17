@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysCourseMapper">
+    
+    <resultMap type="SysCourse" id="SysCourseResult">
+        <result property="courseId"    column="course_id"    />
+        <result property="classId"    column="class_id"    />
+        <result property="courseSeq"    column="course_seq"    />
+        <result property="courseName"    column="course_name"    />
+        <result property="courseOverview"    column="course_overview"    />
+        <result property="coursePath"    column="course_path"    />
+        <result property="courseCoverpath"    column="course_coverpath"    />
+        <result property="courseUrl"    column="course_url"    />
+        <result property="courseCoverurl"    column="course_coverurl"    />
+        <result property="courseFileid"    column="course_fileid"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSysCourseVo">
+        select course_id, class_id, course_seq, course_name, course_overview, course_path, course_coverpath, course_url, course_coverurl, course_fileid, status, del_flag, create_by, create_time, update_by, update_time, remark from sys_course
+    </sql>
+
+    <select id="selectSysCourseList" parameterType="SysCourse" resultMap="SysCourseResult">
+        <include refid="selectSysCourseVo"/>
+        <where>  
+            <if test="classId != null "> and class_id = #{classId}</if>
+            <if test="courseSeq != null "> and course_seq = #{courseSeq}</if>
+            <if test="courseName != null  and courseName != ''"> and course_name like concat('%', #{courseName}, '%')</if>
+            <if test="courseOverview != null  and courseOverview != ''"> and course_overview = #{courseOverview}</if>
+            <if test="coursePath != null  and coursePath != ''"> and course_path = #{coursePath}</if>
+            <if test="courseCoverpath != null  and courseCoverpath != ''"> and course_coverpath = #{courseCoverpath}</if>
+            <if test="courseUrl != null  and courseUrl != ''"> and course_url = #{courseUrl}</if>
+            <if test="courseCoverurl != null  and courseCoverurl != ''"> and course_coverurl = #{courseCoverurl}</if>
+            <if test="courseFileid != null  and courseFileid != ''"> and course_fileid = #{courseFileid}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysCourseByCourseId" parameterType="Long" resultMap="SysCourseResult">
+        <include refid="selectSysCourseVo"/>
+        where course_id = #{courseId}
+    </select>
+        
+    <insert id="insertSysCourse" parameterType="SysCourse">
+        insert into sys_course
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="courseId != null">course_id,</if>
+            <if test="classId != null">class_id,</if>
+            <if test="courseSeq != null">course_seq,</if>
+            <if test="courseName != null">course_name,</if>
+            <if test="courseOverview != null">course_overview,</if>
+            <if test="coursePath != null">course_path,</if>
+            <if test="courseCoverpath != null">course_coverpath,</if>
+            <if test="courseUrl != null">course_url,</if>
+            <if test="courseCoverurl != null">course_coverurl,</if>
+            <if test="courseFileid != null">course_fileid,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="courseId != null">#{courseId},</if>
+            <if test="classId != null">#{classId},</if>
+            <if test="courseSeq != null">#{courseSeq},</if>
+            <if test="courseName != null">#{courseName},</if>
+            <if test="courseOverview != null">#{courseOverview},</if>
+            <if test="coursePath != null">#{coursePath},</if>
+            <if test="courseCoverpath != null">#{courseCoverpath},</if>
+            <if test="courseUrl != null">#{courseUrl},</if>
+            <if test="courseCoverurl != null">#{courseCoverurl},</if>
+            <if test="courseFileid != null">#{courseFileid},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysCourse" parameterType="SysCourse">
+        update sys_course
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="classId != null">class_id = #{classId},</if>
+            <if test="courseSeq != null">course_seq = #{courseSeq},</if>
+            <if test="courseName != null">course_name = #{courseName},</if>
+            <if test="courseOverview != null">course_overview = #{courseOverview},</if>
+            <if test="coursePath != null">course_path = #{coursePath},</if>
+            <if test="courseCoverpath != null">course_coverpath = #{courseCoverpath},</if>
+            <if test="courseUrl != null">course_url = #{courseUrl},</if>
+            <if test="courseCoverurl != null">course_coverurl = #{courseCoverurl},</if>
+            <if test="courseFileid != null">course_fileid = #{courseFileid},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where course_id = #{courseId}
+    </update>
+
+    <delete id="deleteSysCourseByCourseId" parameterType="Long">
+        delete from sys_course where course_id = #{courseId}
+    </delete>
+
+    <delete id="deleteSysCourseByCourseIds" parameterType="String">
+        delete from sys_course where course_id in 
+        <foreach item="courseId" collection="array" open="(" separator="," close=")">
+            #{courseId}
+        </foreach>
+    </delete>
+
+</mapper>

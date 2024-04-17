@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysCourseMediaMapper">
+    
+    <resultMap type="SysCourseMedia" id="SysCourseMediaResult">
+        <result property="fileUuid"    column="file_uuid"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="filePath"    column="file_path"    />
+        <result property="fileExt"    column="file_ext"    />
+        <result property="fileSize"    column="file_size"    />
+    </resultMap>
+
+    <sql id="selectSysCourseMediaVo">
+        select file_uuid, file_name, file_path, file_ext, file_size from sys_course_media
+    </sql>
+
+    <select id="selectSysCourseMediaList" parameterType="SysCourseMedia" resultMap="SysCourseMediaResult">
+        <include refid="selectSysCourseMediaVo"/>
+        <where>  
+            <if test="fileName != null  and fileName != ''"> and file_name like concat('%', #{fileName}, '%')</if>
+            <if test="filePath != null  and filePath != ''"> and file_path = #{filePath}</if>
+            <if test="fileExt != null  and fileExt != ''"> and file_ext = #{fileExt}</if>
+            <if test="fileSize != null "> and file_size = #{fileSize}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysCourseMediaByFileUuid" parameterType="String" resultMap="SysCourseMediaResult">
+        <include refid="selectSysCourseMediaVo"/>
+        where file_uuid = #{fileUuid}
+    </select>
+        
+    <insert id="insertSysCourseMedia" parameterType="SysCourseMedia">
+        insert into sys_course_media
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fileUuid != null">file_uuid,</if>
+            <if test="fileName != null and fileName != ''">file_name,</if>
+            <if test="filePath != null and filePath != ''">file_path,</if>
+            <if test="fileExt != null">file_ext,</if>
+            <if test="fileSize != null">file_size,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fileUuid != null">#{fileUuid},</if>
+            <if test="fileName != null and fileName != ''">#{fileName},</if>
+            <if test="filePath != null and filePath != ''">#{filePath},</if>
+            <if test="fileExt != null">#{fileExt},</if>
+            <if test="fileSize != null">#{fileSize},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysCourseMedia" parameterType="SysCourseMedia">
+        update sys_course_media
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fileName != null and fileName != ''">file_name = #{fileName},</if>
+            <if test="filePath != null and filePath != ''">file_path = #{filePath},</if>
+            <if test="fileExt != null">file_ext = #{fileExt},</if>
+            <if test="fileSize != null">file_size = #{fileSize},</if>
+        </trim>
+        where file_uuid = #{fileUuid}
+    </update>
+
+    <delete id="deleteSysCourseMediaByFileUuid" parameterType="String">
+        delete from sys_course_media where file_uuid = #{fileUuid}
+    </delete>
+
+    <delete id="deleteSysCourseMediaByFileUuids" parameterType="String">
+        delete from sys_course_media where file_uuid in 
+        <foreach item="fileUuid" collection="array" open="(" separator="," close=")">
+            #{fileUuid}
+        </foreach>
+    </delete>
+    <update id="truncateTable">
+        truncate table sys_course_media
+    </update>
+    <insert id="insertBatch">
+        INSERT INTO sys_course_media
+        (file_uuid, file_name, file_path,file_ext,file_size)
+        VALUES
+        <foreach collection ="list" item="item" separator =",">
+            (#{item.fileUuid}, #{item.fileName}, #{item.filePath}, #{item.fileExt}, #{item.fileSize})
+        </foreach >
+    </insert>
+</mapper>

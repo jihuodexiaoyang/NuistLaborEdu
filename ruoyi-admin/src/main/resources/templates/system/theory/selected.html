@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('理论学习选课')" />
+    <meta charset="UTF-8">
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>课程标题：</label>
+                                <input type="text" name="classTitle"/>
+                            </li>
+                            <li>
+                                <label>开课单位：</label>
+                                <input type="text" name="classOrg"/>
+                            </li>
+                            <li>
+                                <label>课程分类：</label>
+                                <select name="classSubject" th:with="type=${@dict.getType('sys_theory_type')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>开课地点：</label>
+                                <input type="text" name="classAddress"/>
+                            </li>
+                            <li>
+                                <label>联系人：</label>
+                                <input type="text" name="classOwner"/>
+                            </li>
+                            <li>
+                                <label>联系电话：</label>
+                                <input type="text" name="classMobile"/>
+                            </li>
+                            <li>
+                                <label>开始时间：</label>
+                                <input type="text" class="time-input" autocomplete="off" placeholder="请选择课程开始时间" name="classStarttime"/>
+                            </li>
+                            <li>
+                                <label>结束时间：</label>
+                                <input type="text" class="time-input" autocomplete="off" placeholder="请选择课程结束时间" name="classEndtime"/>
+                            </li>
+                            <li>
+                                <label>课程学分：</label>
+                                <input type="text" name="classCredit"/>
+                            </li>
+                            <li>
+                                <label>课程状态：</label>
+                                <select name="status" th:with="type=${@dict.getType('sys_normal_disable')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:theory:select">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var selectFlag = [[${@permission.hasPermi('system:theory:select')}]];
+        var datas = [[${@dict.getType('sys_normal_disable')}]];
+        var datas_fl = [[${@dict.getType('sys_theory_type')}]];
+        var prefix = ctx + "system/theory";
+
+        $(function() {
+            var options = {
+                url: prefix + "/listselected",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/exportselected",
+                modalName: "理论学习",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'classId',
+                    title: '编号',
+                    visible: false
+                },
+                {
+                    field: 'classDept',
+                    title: '部门编号',
+                    visible: false
+                },
+                {
+                    field: 'orderNum',
+                    title: '排序'
+                },
+                {
+                    field: 'classTitle',
+                    title: '课程标题'
+                },
+                {
+                    field: 'classSubject',
+                    title: '课程分类',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(datas_fl, value);
+                    }
+                },
+                {
+                    field: 'classOrg',
+                    title: '开课单位'
+                },
+                {
+                    field: 'classOverview',
+                    title: '讲座内容',
+                    formatter: function(value, row, index) {
+                        return $.table.tooltip(value, 10, "open");
+                    }
+                },
+                {
+                    field: 'classAddress',
+                    title: '开课地点'
+                },
+                {
+                    field: 'classOwner',
+                    title: '联系人'
+                },
+                {
+                    field: 'classMobile',
+                    title: '联系电话'
+                },
+                {
+                    field: 'classStarttime',
+                    title: '课程开始时间'
+                },
+                {
+                    field: 'classEndtime',
+                    title: '课程结束时间'
+                },
+                {
+                    field: 'classCredit',
+                    title: '课程学分'
+                },
+                {
+                    field: 'classLimit',
+                    title: '容纳人数'
+                },
+                {
+                    field: 'classApply',
+                    title: '申请人数'
+                },
+                {
+                    field: 'classLike',
+                    title: '喜欢人数',
+                    visible: false
+                },
+                {
+                    field: 'status',
+                    title: '开课状态',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(datas, value);
+                    }
+                },
+                {
+                    field: 'remark',
+                    title: '备注',
+                    formatter: function(value, row, index) {
+                        return $.table.tooltip(value, 10, "open");
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

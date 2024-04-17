@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('线上教学成绩')" />
+	<th:block th:include="include :: layout-latest-css" />
+	<th:block th:include="include :: ztree-css" />
+</head>
+<body class="gray-bg">
+	<div class="ui-layout-west">
+		<div class="box box-main">
+			<div class="box-header">
+				<div class="box-title">
+					<i class="fa icon-grid"></i> 组织机构
+				</div>
+				<div class="box-tools pull-right">
+					<button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;"><i class="fa fa-chevron-up"></i></button>
+					<button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠"><i class="fa fa-chevron-down"></i></button>
+					<button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新部门"><i class="fa fa-refresh"></i></button>
+				</div>
+			</div>
+			<div class="ui-layout-content">
+				<div id="tree" class="ztree"></div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="ui-layout-center">
+		<div class="container-div">
+			<div class="row">
+				<div class="col-sm-12 search-collapse">
+					<form id="user-form">
+						<input type="hidden" id="deptId" name="deptId">
+		                <input type="hidden" id="parentId" name="parentId">
+						<div class="select-list">
+							<ul>
+								<li>
+									姓名：<input type="text" name="userName"/>
+								</li>
+								<li>
+									学号：<input type="text" name="loginName"/>
+								</li>
+								<li>
+									<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								    <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+								</li>
+							</ul>
+						</div>
+					</form>
+				</div>
+				
+		        <div class="btn-group-sm" id="toolbar" role="group">
+					<a class="btn btn-primary" onclick="$.table.importExcel()" shiro:hasPermission="system:online:import">
+						<i class="fa fa-upload"></i> 导入
+					</a>
+		            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:online:export">
+			            <i class="fa fa-download"></i> 导出
+			        </a>
+					<a class="btn btn-danger" onclick="attachment()" shiro:hasPermission="system:online:import">
+						<i class="fa fa-file"></i> 上传附件
+					</a>
+		        </div>
+		        <div class="col-sm-12 select-table table-striped">
+				    <table id="bootstrap-table"></table>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: layout-latest-js" />
+	<th:block th:include="include :: ztree-js" />
+	<script th:inline="javascript">
+		var prefix = ctx + "system/online";
+		var datas = [[${@dict.getType('sys_normal_disable')}]];
+		var datas_compl = [[${@dict.getType('sys_complete_flag')}]];
+		var datas_class = [[${@dict.getType('sys_class_type')}]];
+
+		$(function() {
+		    var panehHidden = false;
+		    if ($(this).width() < 769) {
+		        panehHidden = true;
+		    }
+		    $('body').layout({ initClosed: panehHidden, west__size: 185 });
+	     	// 回到顶部绑定
+	    	if ($.fn.toTop !== undefined) {
+	    		var opt = {
+	    			win:$('.ui-layout-center'),
+	    			doc:$('.ui-layout-center')
+	    		};
+	    		$('#scroll-up').toTop(opt);
+	    	}
+		    queryUserList();
+		    queryDeptTree();
+		});
+
+		function queryUserList() {
+		    var options = {
+		        url: prefix + "/listonline",
+				importTemplateUrl:prefix + "/importtemplate",
+				importUrl: prefix + "/importonline",
+		        exportUrl: prefix + "/exportonline",
+		        sortName: "loginName",
+		        sortOrder: "asc",
+				modalName: "线上教学成绩",
+				columns: [{
+					checkbox: true
+				},
+				{
+					field: 'userId',
+					title: '用户编号'
+				},
+				{
+					field: 'loginName',
+					title: '学号',
+					sortable: true
+				},
+				{
+					field: 'userName',
+					title: '姓名'
+				},
+				{
+					field: 'deptId',
+					visible:false,
+					title: '部门编号'
+				},
+				{
+					field: 'deptName',
+					title: '院系专业'
+				},
+				{
+					field: 'email',
+					visible:false,
+					title: '邮箱'
+				},
+				{
+					field: 'sex',
+					visible:false,
+					title: '性别'
+				},
+				{
+					field: 'status',
+					title: '状态',
+					align: 'center',
+					formatter: function(value, row, index) {
+						return $.table.selectDictLabel(datas, value);
+					}
+				},
+				{
+					field: 'userCredit',
+					title: '成绩'
+				}]
+		    };
+		    $.table.init(options);
+		}
+		//打开附件管理窗口
+		function attachment(){
+			var deptId=$("#deptId").val();
+			if(deptId){
+				var url = prefix + '/attachment/' + $("#deptId").val();
+				$.modal.openTab("线上理论附件管理", url);
+			}else{
+				$.modal.alertError("请先选择上传附件的归属部门");
+			}
+		}
+		function queryDeptTree()
+		{
+			var url = ctx + "system/dept/treeData";
+			var options = {
+		        url: url,
+		        expandLevel: 2,
+		        onClick : zOnClick
+		    };
+			$.tree.init(options);
+			
+			function zOnClick(event, treeId, treeNode) {
+				$("#deptId").val(treeNode.id);
+				$("#parentId").val(treeNode.pId);
+				$.table.search();
+			}
+		}
+		
+		$('#btnExpand').click(function() {
+			$._tree.expandAll(true);
+		    $(this).hide();
+		    $('#btnCollapse').show();
+		});
+		
+		$('#btnCollapse').click(function() {
+			$._tree.expandAll(false);
+		    $(this).hide();
+		    $('#btnExpand').show();
+		});
+		
+		$('#btnRefresh').click(function() {
+			queryDeptTree();
+		});
+
+	</script>
+</body>
+<!-- 导入区域 -->
+<script id="importTpl" type="text/template">
+<form enctype="multipart/form-data" class="mt20 mb10">
+	<div class="col-xs-offset-1">
+		<input type="file" id="file" name="file"/>
+		<div class="mt10 pt5">
+			<input type="checkbox" id="updateSupport" name="updateSupport" title="如果登录账户已经存在，更新这条数据。"> 是否更新已经存在的用户数据
+			 &nbsp;	<a onclick="$.table.importTemplate()" class="btn btn-default btn-xs"><i class="fa fa-file-excel-o"></i> 下载模板</a>
+		</div>
+		<font color="red" class="pull-left mt10">
+			提示：仅允许导入“xls”或“xlsx”格式文件！
+		</font>
+	</div>
+</form>
+</script>
+</html>
