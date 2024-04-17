@@ -15,9 +15,9 @@ ruoyi:
   #签到服务地址
   signAddress: http://localhost:9000/
   # 腾讯云上传
-  secretId: AKID1rRloa6XyHMDqEQQAesqZ2FCtKVQ6Xhb
-  secretKey: h8ICpBG3cvxhAMIxKQGo55pHSLxIL7ds
-  appId: 1256166815
+  secretId: 
+  secretKey: 
+  appId: 
   mediaPath: D:/media/
   coverPath: D:/cover/
   ccNum: 5
@@ -149,11 +149,11 @@ swagger:
 
 # Cas认证
 cas:
-  casserverurl: https://authserver.nuist.edu.cn/authserver/login
-  casserverprefix: https://authserver.nuist.edu.cn/authserver
-  casclienturl: https://gecs.nuist.edu.cn/
-  casloginurl: https://authserver.nuist.edu.cn/authserver/login?service=https://gecs.nuist.edu.cn/
-  casloginurl1: https://authserver.nuist.edu.cn/authserver/login?service=https://gecs.nuist.edu.cn/cas
-  cassuccessurl: /index
-  casfailureurl: https://authserver.nuist.edu.cn/authserver/login?service=https://gecs.nuist.edu.cn/
-  caslogouturl: https://authserver.nuist.edu.cn/authserver/logout?service=https://gecs.nuist.edu.cn/
+  casserverurl: 
+  casserverprefix: 
+  casclienturl: 
+  casloginurl:
+  casloginurl1: 
+  cassuccessurl: 
+  casfailureurl: 
+  caslogouturl: 
