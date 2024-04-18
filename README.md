@@ -19,6 +19,7 @@ API网关层是微服务结构中的入口，可以提供身份验证、授权�
 
 
 ## 前端界面
+：：：
 ![image](https://github.com/jihuodexiaoyang/NuistLaborEdu/assets/116045163/8e74dd7e-61ad-42f1-a1a3-3874952322a2)
 ![image](https://github.com/jihuodexiaoyang/NuistLaborEdu/assets/116045163/bf3112f7-2aa2-4d2e-8dcd-b62506005a39)
 ![image](https://github.com/jihuodexiaoyang/NuistLaborEdu/assets/116045163/9ef01bb3-50c9-46c1-a33e-9b7781469f93)
@@ -26,4 +27,5 @@ API网关层是微服务结构中的入口，可以提供身份验证、授权�
 ![image](https://github.com/jihuodexiaoyang/NuistLaborEdu/assets/116045163/bcf20067-f8a3-48db-9d7c-8dc4ba83ba71)
 ![image](https://github.com/jihuodexiaoyang/NuistLaborEdu/assets/116045163/3d962f10-d06a-4fe4-bf2f-dcf037005158)
 ![image](https://github.com/jihuodexiaoyang/NuistLaborEdu/assets/116045163/b6c3983e-d3cb-4809-8979-82c49745106a)
+：：：
 
