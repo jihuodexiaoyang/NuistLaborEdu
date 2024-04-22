@@ -9,15 +9,15 @@ API网关层是微服务结构中的入口，可以提供身份验证、授权�
 ##模块功能的设计
 系统包括三大模块，课程管理模块、成绩管理模块、系统管理模块，课程管理模块如图4所示。课程管理模块包括学习功能、选课功能、已选课程管理功能等，成绩管理模块包括成绩统计功能、成绩考核功能、课程预警功能等，系统管理模块主要分为用户和角色管理功能、部门和岗位管理功能、登录日志管理功能、系统监控和系统工具、通知公告、校园地图以及数据分析。
 
-<p align="center"> 
+ 
  ![image](https://github.com/jihuodexiaoyang/NuistLaborEdu/assets/116045163/77d586d8-5d3c-4d98-bd9a-2ed686c11d2e)
  ![image](https://github.com/jihuodexiaoyang/NuistLaborEdu/assets/116045163/c4279634-dccf-44fb-b09f-d17118320857)
-</p>
+
 
 
 
 ## 前端界面
-<p align="center"> 
+
 ![image](https://github.com/jihuodexiaoyang/NuistLaborEdu/assets/116045163/8e74dd7e-61ad-42f1-a1a3-3874952322a2)
 ![image](https://github.com/jihuodexiaoyang/NuistLaborEdu/assets/116045163/bf3112f7-2aa2-4d2e-8dcd-b62506005a39)
 ![image](https://github.com/jihuodexiaoyang/NuistLaborEdu/assets/116045163/9ef01bb3-50c9-46c1-a33e-9b7781469f93)
@@ -25,4 +25,4 @@ API网关层是微服务结构中的入口，可以提供身份验证、授权�
 ![image](https://github.com/jihuodexiaoyang/NuistLaborEdu/assets/116045163/bcf20067-f8a3-48db-9d7c-8dc4ba83ba71)
 ![image](https://github.com/jihuodexiaoyang/NuistLaborEdu/assets/116045163/3d962f10-d06a-4fe4-bf2f-dcf037005158)
 ![image](https://github.com/jihuodexiaoyang/NuistLaborEdu/assets/116045163/b6c3983e-d3cb-4809-8979-82c49745106a)
-</p>
+
